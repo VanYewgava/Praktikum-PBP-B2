@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TUGAS PRAKTIKUM</title>
+</head>
+<body>
+<h2>FORM TAMBAH DATA PRODUK</h2>
+<form id="productForm">
+<p>
+<label for="nama-produk">Nama Produk</label>
+<input type="text" id="nama-produk" name="nama-produk">
+<span id="nama-produk-error" style="color:red;"></span>
+</p>
+<table>
+<tr>
+<td><label for="deskripsi">Deskripsi</label></td>
+<td><textarea name="deskripsi" id="deskripsi" rows="4"></textarea></td>
+</tr>
+</table>
+<span id="deskripsi-error" style="color:red;"></span>
+<p>
+<label for="kategori">Kategori</label>
+<select id="kategori" name="kategori">
+<option value="">--Pilih Kategori--</option>
+<option value="Baju">Baju</option>
+<option value="Elektronik">Elektronik</option>
+<option value="Alat Tulis">Alat Tulis</option>
+</select>
+<span id="kategori-error" style="color:red;"></span>
+</p>
+<p>
+<label for="sub-kategori">Sub Kategori</label>
+<select id="sub-kategori" name="sub-kategori">
+<option value="">--Pilih Sub Kategori--</option>
+</select>
+<span id="sub-kategori-error" style="color:red;"></span>
+</p>
+<p>
+<label for="harga-satuan">Harga Satuan</label>
+<input type="text" id="harga-satuan" name="harga-satuan">
+<span id="harga-satuan-error" style="color:red;"></span>
+</p>
+<p>
+<table>
+<tr>
+<td>
+<label>Grosir</label>
+</td>
+<td>
+<input type="radio" id="grosir-ya" name="grosir" value="Ya">
+<label for="grosir-ya">Ya</label><br>
+<input type="radio" id="grosir-tidak" name="grosir" value="Tidak">
+<label for="grosir-tidak">Tidak</label>
+</td>
+</tr>
+</table>
+</p>
+<p>
+<label for="harga-grosir">Harga Grosir</label>
+<input type="text" id="harga-grosir" name="harga-grosir" disabled>
+<span id="harga-grosir-error" style="color:red;"></span>
+</p>
+<p>
+<table>
+<tr>
+<td><label for="jasa-kirim">Jasa Kirim</label></td>
+<td>
+<input type="checkbox" id="jne" name="jasa-kirim" value="JNE">
+<label for="jne">JNE</label><br>
+<input type="checkbox" id="tiki" name="jasa-kirim" value="TIKI">
+<label for="tiki">TIKI</label><br>
+<input type="checkbox" id="sicepat" name="jasa-kirim"
+value="SiCepat">
+<label for="sicepat">SiCepat</label><br>
+<input type="checkbox" id="ninja" name="jasa-kirim" value="Ninja
+Express">
+<label for="ninja">Ninja Express</label><br>
+<input type="checkbox" id="wahana" name="jasa-kirim" value="Wahana">
+<label for="wahana">Wahana</label>
+</td>
+</tr>
+</table>
+<span id="jasa-kirim-error" style="color:red;"></span>
+</p>
+<p>
+<label for="captcha">Captcha</label>
+<span id="captcha-text"></span>
+<input type="text" id="captcha" name="captcha">
+<span id="captcha-error" style="color:red;"></span>
+</p>
+<p>
+<input type="submit" value="Submit">
+<input type="reset" value="Reset">
+</p>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+// Captcha generation
+function generateCaptcha() {
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+let captcha = '';
+for (let i = 0; i < 5; i++) {
+const randomIndex = Math.floor(Math.random() * chars.length);
+captcha += chars.charAt(randomIndex);
+}
+document.getElementById('captcha-text').textContent = captcha;
+}
+generateCaptcha();
+// Sub Kategori logic based on Kategori selection
+const kategori = document.getElementById('kategori');
+const subKategori = document.getElementById('sub-kategori');
+kategori.addEventListener('change', function () {
+let options = '<option value="">--Pilih Sub Kategori--</option>';
+if (kategori.value === 'Baju') {
+options += '<option value="Baju Pria">Baju Pria</option>';
+options += '<option value="Baju Wanita">Baju Wanita</option>';
+options += '<option value="Baju Anak">Baju Anak</option>';
+} else if (kategori.value === 'Elektronik') {
+options += '<option value="Mesin Cuci">Mesin Cuci</option>';
+options += '<option value="Kulkas">Kulkas</option>';
+options += '<option value="AC">AC</option>';
+} else if (kategori.value === 'Alat Tulis') {
+options += '<option value="Kertas">Kertas</option>';
+options += '<option value="Map">Map</option>';
+options += '<option value="Pulpen">Pulpen</option>';
+}
+subKategori.innerHTML = options;
+});
+// Grosir logic
+const grosirYa = document.getElementById('grosir-ya');
+const grosirTidak = document.getElementById('grosir-tidak');
+const hargaGrosir = document.getElementById('harga-grosir');
+grosirYa.addEventListener('change', function () {
+hargaGrosir.disabled = false;
+});
+grosirTidak.addEventListener('change', function () {
+hargaGrosir.disabled = true;
+hargaGrosir.value = '';
+});
+// Form validation and alert
+document.getElementById('productForm').addEventListener('submit', function (e)
+{
+let valid = true;
+// Nama Produk validation
+const namaProduk = document.getElementById('nama-produk').value;
+const namaProdukError = document.getElementById('nama-produk-error');
+if (namaProduk.length < 5 || namaProduk.length > 30) {
+namaProdukError.textContent = 'Nama produk harus diisi, minimal 5
+karakter, maksimal 30 karakter';
+valid = false;
+} else {
+namaProdukError.textContent = '';
+}
+// Deskripsi Produk validation
+const deskripsi = document.getElementById('deskripsi').value;
+const deskripsiError = document.getElementById('deskripsi-error');
+if (deskripsi.length < 5 || deskripsi.length > 100) {
+deskripsiError.textContent = 'Deskripsi produk harus diisi, minimal 5
+karakter, maksimal 100 karakter';
+valid = false;
+} else {
+deskripsiError.textContent = '';
+}
+// Kategori validation
+const kategoriValue = document.getElementById('kategori').value;
+const kategoriError = document.getElementById('kategori-error');
+if (!kategoriValue) {
+kategoriError.textContent = 'Kategori harus dipilih';
+valid = false;
+} else {
+kategoriError.textContent = '';
+}
+// Sub Kategori validation
+const subKategoriValue = document.getElementById('sub-kategori').value;
+const subKategoriError = document.getElementById('sub-kategori-error');
+if (!subKategoriValue) {
+subKategoriError.textContent = 'Sub kategori harus dipilih';
+valid = false;
+} else {
+subKategoriError.textContent = '';
+}
+// Harga Satuan validation
+const hargaSatuan = document.getElementById('harga-satuan').value;
+const hargaSatuanError = document.getElementById('harga-satuan-error');
+if (isNaN(hargaSatuan) || hargaSatuan === '') {
+hargaSatuanError.textContent = 'Harga satuan harus berupa nilai
+numerik';
+valid = false;
+} else {
+hargaSatuanError.textContent = '';
+}
+// Harga Grosir validation
+const hargaGrosirValue = document.getElementById('harga-grosir').value;
+const hargaGrosirError = document.getElementById('harga-grosir-error');
+if (grosirYa.checked && (isNaN(hargaGrosirValue) || hargaGrosirValue ===
+'')) {
+hargaGrosirError.textContent = 'Harga grosir harus berupa nilai numerik
+jika opsi grosir dipilih';
+valid = false;
+} else {
+hargaGrosirError.textContent = '';
+}
+// Jasa Kirim validation
+const jasaKirim = document.querySelectorAll('input[name="jasakirim"]:checked');
+const jasaKirimError = document.getElementById('jasa-kirim-error');
+if (jasaKirim.length === 0) {
+jasaKirimError.textContent = 'Minimal satu jasa kirim harus dipilih';
+valid = false;
+} else {
+jasaKirimError.textContent = '';
+}
+// Captcha validation
+const captchaInput = document.getElementById('captcha').value;
+const captchaText = document.getElementById('captcha-text').textContent;
+const captchaError = document.getElementById('captcha-error');
+if (captchaInput !== captchaText) {
+captchaError.textContent = 'Captcha tidak sesuai';
+valid = false;
+} else {
+captchaError.textContent = '';
+}
+// Jika validasi berhasil
+if (valid) {
+alert('Data sudah berhasil dimasukkan.');
+} else {
+e.preventDefault(); // Mencegah submit jika validasi gagal
+}
+});
+});
+</script>
+</body>
+</html>
